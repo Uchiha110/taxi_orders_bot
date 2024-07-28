@@ -4,7 +4,7 @@ from aiogram.filters.command import Command
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 from config.config import admin
-from database import create_table
+from database import get_name_table, actions_table
 from states.publication_location_states import Form
 
 
@@ -21,23 +21,35 @@ async def add_publication_location_command(dp):
             ])
 
             await message.answer(msg, reply_markup=button_cancel)
-            await state.set_state(Form.PUBLICATION_LOCATION)
+            await state.set_state(Form.ADD_PUBLICATION_LOCATION)
 
-    @dp.message(Form.PUBLICATION_LOCATION)
+    @dp.message(Form.ADD_PUBLICATION_LOCATION)
     async def add_publication_location(message: types.Message, state: FSMContext) -> None:
         user_msg = message.text
-        msg = "The chat has been successfully added!"
+        msg1 = "The chat has been successfully added!"
+        msg2 = ('The chat ID must start with the character: "-"\n'
+                'Re-enter the command and try again\n'
+                'If anything, here it is: /add_publication_location')
+        msg3 = ('This chat is already linked\n'
+                'Re-enter the command and try again\n'
+                'If anything, here it is: /add_publication_location')
+        chats_id = await get_name_table()
 
-        await message.answer(msg)
+        if user_msg[0] == "-":
+            if user_msg not in chats_id:
+                await actions_table(actions="create", name=int(user_msg))
+                await state.set_state(Form.DEFAULT)
+                await message.answer(msg1)
+            else:
+                await state.set_state(Form.DEFAULT)
+                await message.answer(msg3)
+        else:
+            await state.set_state(Form.DEFAULT)
+            await message.answer(msg2)
 
-        await create_table(int(user_msg))
-        await state.set_state(Form.DEFAULT)
-
-    @dp.callback_query(Form.PUBLICATION_LOCATION, F.data == "cancel_add_order")
+    @dp.callback_query(Form.ADD_PUBLICATION_LOCATION, F.data == "cancel_add_order")
     async def add_publication_location(callback: types.CallbackQuery, state: FSMContext) -> None:
         msg = "Adding a chat has been canceled"
 
-        await callback.message.answer(msg)
-
         await state.set_state(Form.DEFAULT)
-
+        await callback.message.answer(msg)

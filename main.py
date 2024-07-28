@@ -5,6 +5,7 @@ from aiogram.fsm.storage.memory import MemoryStorage
 from dotenv import load_dotenv
 
 from config.config import bot
+from handlers.default_comands import default_commands
 from handlers.add_order import add_order_command
 from handlers.del_order import del_order_command
 from handlers.add_publication_location import add_publication_location_command
@@ -21,6 +22,7 @@ storage = MemoryStorage()
 async def main() -> None:
     dp = Dispatcher(storage=storage)
 
+    await default_commands(dp)
     await add_order_command(dp)
     await del_order_command(dp)
     await add_publication_location_command(dp)
