@@ -26,7 +26,7 @@ async def default_commands(dp):
             msg = ("/start - this is the most useless team of all, just the beginning.\n"
                    "/help - this is a list with all the commands that the bot can execute.\n"
                    "/add_order - sending a message to linked chats, as well as writing to the database.\n"
-                   "/del_order - deleting a message from linked chats, as well as deleting it from the database.\n"
+                   "/list_order - this is the output of all orders that are in linked chats, with the possibility of deletion\n"
                    "/add_publication_location - this is to link the chat to the bot.\n"
                    "/del_publication_location - this is to unlink the chat from the bot\n")
 

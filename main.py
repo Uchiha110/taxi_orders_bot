@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from config.config import bot
 from handlers.default_comands import default_commands
 from handlers.add_order import add_order_command
-from handlers.del_order import del_order_command
+from handlers.list_order import del_order_command
 from handlers.add_publication_location import add_publication_location_command
 from handlers.del_publication_location import del_publication_location_command
 

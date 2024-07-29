@@ -1,4 +1,5 @@
 import asyncio
+import uuid
 
 from aiogram import types, F
 from aiogram.fsm.context import FSMContext
@@ -6,7 +7,7 @@ from aiogram.filters.command import Command
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 from config.config import bot, admin
-from database import get_name_table, actions_chat_message
+from database import get_name_table, actions_chat_message, add_uuid_order
 from states.order_states import Form
 
 
@@ -30,11 +31,14 @@ async def add_order_command(dp):
         user_msg = message.text
         msg = "Message successfully send!"
         chats_id = await get_name_table()
+        uuid_order = uuid.uuid4().hex
 
+        await add_uuid_order(uuid_order)
         for chat_id in chats_id:
             message_id_chat = await bot.send_message(chat_id=chat_id, text=f"{user_msg}")
             await actions_chat_message(actions="write",
                                        table_name=chat_id,
+                                       uuid_order=uuid_order,
                                        message_id=message_id_chat.message_id,
                                        message_text=user_msg)
 
